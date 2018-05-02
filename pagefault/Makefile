@@ -10,7 +10,7 @@ LFLAGS = -Wall $(DEBUG)
 
 fault: main.c
 	#$(CC) $(CFLAGS) $< -o $@
-	gcc -mavx -O0 -g $< -I /home/sirius/labs-proj/memory-benchmark/ -o $@
+	gcc -mavx -O0 -g $< -I /home/sirius/labs-proj/pursuing/memory-benchmark/ -o $@
 ingens: ingens-fault.c
 	gcc $< -o $@ -lpthread
 	

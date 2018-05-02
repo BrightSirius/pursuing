@@ -11,11 +11,15 @@
 #define STEP (1<<21)
 
 
-#define MMAP
-//#define MALLOC
+
+
+
+//#define TEST_BINDWIDTH
+//#define MMAP
+#define MALLOC
 
 //mmap syscall
-#define LENGTH (1024*1024*1024)
+#define LENGTH SIZE
 #define PROTECTION (PROT_READ | PROT_WRITE)
 
 #ifdef __ia64__
@@ -27,16 +31,15 @@
 #define FLAGS (MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
 #endif
 
-//#define TEST_BINDWIDTH
 
 
-void bench(void* (*mmset)(void*, int, int), char* p){
+void bench(void* (*mmset)(void*, int, size_t), char* p){
     struct timeval t1, t2;
     struct timeval t3, t4;
     gettime(&t1, NULL);
-    memset(p, 1, SIZE);
+    mmset(p, 1, SIZE);
     gettime(&t2, NULL);
-    memset(p, 2, SIZE);
+    mmset(p, 2, SIZE);
     gettime(&t3, NULL);
     long long off1 = TIMEus(t1, t2);
     long long off2 = TIMEus(t2, t3);
@@ -54,7 +57,8 @@ int main(){
 #ifdef ELSE
     printf("ELSE\n");
 #endif
-    void* addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, -1, 0);
+    // echo 512 > /proc/sys/vm/nr_hugepages
+    void* addr = mmap(ADDR, SIZE, PROTECTION, FLAGS, -1, 0);
 	if (addr == MAP_FAILED) {
 		perror("mmap");
 		exit(1);
@@ -62,14 +66,14 @@ int main(){
     char* p = addr;
 #endif
     //printf("alloc %dKB\n", SIZE/1024);
-    //printf("p %p\n", p);
+    printf("p %p\n", p);
     //printf("brk alloc %p\n", sbrk(0));
     //char* p = memalign(256, SIZE);
 
-    //bench(memset, p);
+    bench(memset, p);
     //bench(memset_naive, p);
     
-    sleep(10);
+    //sleep(10);
     
 #ifdef MALLOC
     free(p);
@@ -81,7 +85,7 @@ int main(){
 #ifdef TEST_BINDWIDTH
     char* q = malloc(SIZE);
     struct timeval t1, t2;
-    //memset(q, 0, SIZE);
+    memset(q, 0, SIZE);
 
     gettime(&t1, NULL);
     memset(q, 1, SIZE);
