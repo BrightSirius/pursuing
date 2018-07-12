@@ -29,7 +29,7 @@ void* memset_256_mp(char* p, int v, int size){
 }
 */
 
-void bench(void* (*mmset)(char*, int, int), char* p, int v, int size){
+void bench(void* (*mmset)(void*, int, int), char* p, int v, int size){
     struct timeval t1, t2;
     gettime(&t1, NULL);
     mmset(p, v, size);
@@ -47,14 +47,16 @@ int main(){
     memset(p, 1, SIZE);
     printf("---------naive-------------\n");
     bench(memset_naive, p, 1, SIZE);
-    printf("---------naive memset----------\n");
+    printf("---------memset 256----------\n");
+    bench(memset_256, p, 1, SIZE);
+    printf("---------glibc memset----------\n");
     bench(memset, p, 1, SIZE);
     printf("---------memset stream 128----------\n");
-    bench(memset_128, p, 1, SIZE);
+    bench(fast_memset128, p, 1, SIZE);
     printf("---------memset stream 256----------\n");
-    bench(memset_256, p, 1, SIZE);
+    bench(fast_memset256, p, 1, SIZE);
     printf("---------memset 256 multithreading----------\n");
-    bench(memset_256_mp, p, 1, SIZE);
+    bench(fast_memset256_mp, p, 1, SIZE);
     free(p);
     return 0;
 }
