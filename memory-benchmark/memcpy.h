@@ -749,6 +749,36 @@ static void* fast_memcpy256(void *destination, const void *source, size_t size){
     //_mm_sfence();
 }
 
+static void* memcpy256(void *destination, const void *source, size_t size){
+    const char* src = source;
+    char* dst = destination;
+    int STEP = 128;
+    assert(size%STEP==0);
+    assert((long long)(src)%STEP==0);
+    assert((long long)(dst)%STEP==0);
+    //printf("here\n");
+    __m256i c0, c1, c2, c3, c4, c5, c6, c7;
+    int i;
+    for(i = 0; i < size; i += STEP){
+        c0 = _mm256_load_si256(((const __m256i*)src) + 0);
+        c1 = _mm256_load_si256(((const __m256i*)src) + 1);
+        c2 = _mm256_load_si256(((const __m256i*)src) + 2);
+        c3 = _mm256_load_si256(((const __m256i*)src) + 3);
+        //_mm_prefetch((const char*)(src + 256), _MM_HINT_NTA);
+        src += STEP;
+        _mm256_store_si256((((__m256i*)dst) + 0), c0);
+        _mm256_store_si256((((__m256i*)dst) + 1), c1);
+        _mm256_store_si256((((__m256i*)dst) + 2), c2);
+        _mm256_store_si256((((__m256i*)dst) + 3), c3);
+        dst += STEP;
+    }
+    //_mm_sfence();
+}
+
+
+
+
+
 #endif
 
 

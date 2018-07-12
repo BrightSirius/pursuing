@@ -13,7 +13,7 @@ void* memset_256(char* bytes, int val, int size){
     int i;
     __m256i vals = _mm256_set1_epi8(val);
     for(i=0; i < size; i+=32){
-        _mm256_store_si256((const __m256i*)(bytes+i), vals);
+        _mm256_store_si256((__m256i*)(bytes+i), vals);
     }
 }
 

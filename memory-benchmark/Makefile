@@ -1,4 +1,4 @@
-all: malloc memory mmap bench run
+all: malloc memcpy mmap bench run
 
 OBJS = 
 CC = gcc -O2
@@ -13,18 +13,18 @@ malloc: malloc.c memset.h
 	$(CC) $(CFLAGS) $< -o $@
 mmap: mmap.c memset.h
 	$(CC) $(CFLAGS) $< -o $@
-memory: memory.c memcpy.h
+memcpy: memcpy.c memcpy.h
 	$(CC) $(CFLAGS) $< -o $@
-run: malloc memory mmap
+run: malloc memcpy mmap
 	#./malloc
 	#./mmap
-	./bench
-	./memory
+#	./bench
+	./memcpy
 	#numactl --cpunodebind=0 --membind=0 ./malloc
 	#numactl --cpunodebind=0 --membind=0 ./mmap
-	#numactl --cpunodebind=0 --membind=0 ./memory
+	#numactl --cpunodebind=0 --membind=0 ./memcpy
 
 
 clean:
-	$(RM) malloc mmap memory bench
+	$(RM) malloc mmap memcpy bench
 

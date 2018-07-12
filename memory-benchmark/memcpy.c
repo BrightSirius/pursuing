@@ -31,11 +31,13 @@ int main(){
     gettimeofday(&begin,NULL);
     for(i=0;i<times;i++){
         int blocks=DATA_SIZE / SEG_SIZE;
-#pragma omp parallel for
-        for(j=0;j<blocks;j++)
-            //memcpy_fast(dst + DATA_SIZE/blocks * j,src + DATA_SIZE/blocks * j,DATA_SIZE/blocks);
+//#pragma omp parallel for
+        for(j=0;j<blocks;j++){
+            memcpy256(dst + DATA_SIZE/blocks * j,src + DATA_SIZE/blocks * j,DATA_SIZE/blocks);
         //fast_memcpy256(dst + DATA_SIZE/blocks * j,src + DATA_SIZE/blocks * j,DATA_SIZE/blocks);
-        memcpy(dst + DATA_SIZE/blocks * j,src + DATA_SIZE/blocks * j,DATA_SIZE/blocks);
+        //memcpy(dst + DATA_SIZE/blocks * j,src + DATA_SIZE/blocks * j,DATA_SIZE/blocks);
+        }
+
     }
     gettimeofday(&end,NULL);
     timersub(&end,&begin,&result);
